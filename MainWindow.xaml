@@ -153,7 +153,7 @@
 
                         <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
                             <TextBlock Text="Eredményszűrő:" VerticalAlignment="Center" Margin="0,0,12,0"></TextBlock>
-                            <ComboBox x:Name="cmbRekordSzuro" Width="340" Height="32" IsEditable="False" SelectedIndex="0" VerticalContentAlignment="Center">
+                            <ComboBox x:Name="cmbRekordSzuro" Width="340" Height="32" IsEditable="False" SelectedIndex="0" VerticalContentAlignment="Center" SelectionChanged="Szuro_Valtozott">
                                 <ComboBoxItem>Összes</ComboBoxItem>
                                 <ComboBoxItem>OR - olimpiai csúcs</ComboBoxItem>
                                 <ComboBoxItem>VR - világcsúcs</ComboBoxItem>
@@ -166,7 +166,7 @@
                     <DataGrid x:Name="dgVersenyzok"
                               Grid.Row="1"
                               Margin="0,12,0,12"
-                              ItemsSource="{Binding Versenyzok, Mode=OneWay}"
+                              ItemsSource="{Binding LathatoVersenyzok, Mode=OneWay}"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
                               CanUserAddRows="False"
