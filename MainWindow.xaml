@@ -23,10 +23,10 @@
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.ColumnSpan="2">
+        <StackPanel Grid.ColumnSpan="2" Margin="0,0,0,16">
             <TextBlock FontSize="28" FontWeight="Bold" Foreground="#19324D"
                        >Atlétikai verseny</TextBlock>
-            <TextBlock Foreground="#52657A" >A versenyzok regisztracioja es rajtszamok kiosztasa</TextBlock>
+            <TextBlock Foreground="#52657A" >Versenyzők regisztrációja és rajtszámok kiosztása</TextBlock>
         </StackPanel>
 
             <Border Grid.Row="1"
@@ -40,62 +40,64 @@
 
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
 
                     </Grid.RowDefinitions>
 
                     <TextBlock FontSize="20" FontWeight="Bold">Új versenyző</TextBlock>
                     
-                    <StackPanel Grid.Row="1">
-                        <TextBlock>Versenyzo neve:</TextBlock>
-                        <TextBox></TextBox>
+                    <StackPanel Grid.Row="1" Margin="0,10,0,0">
+                        <TextBlock Margin="0,0,0,4">Versenyző neve:</TextBlock>
+                        <TextBox x:Name="txtNev" Height="32" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"></TextBox>
                     </StackPanel>
 
-                    <StackPanel Grid.Row="2">
-                        <TextBlock>Versenyszam:</TextBlock>
-                        <ComboBox IsEditable="False">
-                            <ComboBoxItem IsSelected="False">100m</ComboBoxItem>
-                            <ComboBoxItem>200m</ComboBoxItem>
-                            <ComboBoxItem>400m</ComboBoxItem>
-                            <ComboBoxItem>800m</ComboBoxItem>
-                            <ComboBoxItem>1500m</ComboBoxItem>
-                            <ComboBoxItem>Tavolugras</ComboBoxItem>
-                            <ComboBoxItem>Magasugras</ComboBoxItem>
-                            <ComboBoxItem>Sulylokes</ComboBoxItem>
+                    <StackPanel Grid.Row="2" Margin="0,10,0,0">
+                        <TextBlock Margin="0,0,0,4">Versenyszám:</TextBlock>
+                        <ComboBox x:Name="cmbVersenyszam" Height="32" IsEditable="False" SelectedIndex="-1" VerticalContentAlignment="Center">
+                            <ComboBoxItem>100 m</ComboBoxItem>
+                            <ComboBoxItem>200 m</ComboBoxItem>
+                            <ComboBoxItem>400 m</ComboBoxItem>
+                            <ComboBoxItem>800 m</ComboBoxItem>
+                            <ComboBoxItem>1500 m</ComboBoxItem>
+                            <ComboBoxItem>Távolugrás</ComboBoxItem>
+                            <ComboBoxItem>Magasugrás</ComboBoxItem>
+                            <ComboBoxItem>Súlylökés</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
                         
-                     <Grid Grid.Row="3">
+                     <Grid Grid.Row="3" Margin="0,10,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Nem:" VerticalAlignment="Center"></TextBlock>
-                        <RadioButton Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Ferfi" GroupName="Nem" ></RadioButton>
-                        <RadioButton Grid.Column="2" VerticalAlignment="Center" Content="No" GroupName="Nem" ></RadioButton>
+                        <RadioButton x:Name="rbFerfi" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Férfi" GroupName="Nem" ></RadioButton>
+                        <RadioButton x:Name="rbNo" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Nő" GroupName="Nem" ></RadioButton>
                     </Grid>
 
-                    <StackPanel Grid.Row="4">
+                    <StackPanel Grid.Row="4" Margin="0,10,0,0">
                         <Grid>
-                            <TextBlock Text="Eletkor:" HorizontalAlignment="Left"/>
-                            <TextBlock Text="18 ev" FontWeight="Bold" Foreground="DarkBlue" HorizontalAlignment="Right"/>
+                            <TextBlock Text="Életkor:" HorizontalAlignment="Left"/>
+                            <TextBlock x:Name="txtEletkor" Text="18 év" FontWeight="Bold" Foreground="DarkBlue" HorizontalAlignment="Right"/>
                         </Grid>
 
-                        <Slider Minimum="18"
+                        <Slider x:Name="sldEletkor"
+                                Minimum="18"
                                 Maximum="90"
                                 Value="18"
                                 TickPlacement="BottomRight"
                                 IsSnapToTickEnabled="True"
                                 TickFrequency="1"
+                                ValueChanged="Eletkor_Valtozott"
                                 Margin="10,0,10,-5"></Slider>
 
                         <Grid>
@@ -104,26 +106,26 @@
                         </Grid>
                     </StackPanel>
 
-                    <StackPanel Grid.Row="5">
-                        <TextBlock FontWeight="Bold">Korabbi eredmenyek</TextBlock>
-                        <CheckBox>Olimpiai csucs</CheckBox>
-                        <CheckBox>Vilagbajnoki csucs</CheckBox>
-                        <CheckBox>Europa-bajnoki csucs</CheckBox>
+                    <StackPanel Grid.Row="5" Margin="0,10,0,0">
+                        <TextBlock FontWeight="Bold" FontSize="16">Korábbi eredmények</TextBlock>
+                        <CheckBox x:Name="chkOlimpiai" Margin="0,6,0,0">Olimpiai csúcs</CheckBox>
+                        <CheckBox x:Name="chkVB" Margin="0,6,0,0">Világbajnoki csúcs</CheckBox>
+                        <CheckBox x:Name="chkEB" Margin="0,6,0,0">Európa-bajnoki csúcs</CheckBox>
                     </StackPanel>
 
-                    <Grid Grid.Row="6" Height="32">
+                    <Grid Grid.Row="6" Height="32" Margin="0,10,0,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="0" Text="Igenyelt rajtaszam:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                        <TextBox Grid.Column="1" Padding="6"/>
+                        <TextBlock Grid.Column="0" Text="Igényelt rajtszám:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBox x:Name="txtRajtszam" Grid.Column="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
                     </Grid>
                     
-                    <TextBlock VerticalAlignment="Center" Grid.Row="7" FontSize="10">Ures mezo: automatikus kiosztas.</TextBlock>
+                    <TextBlock VerticalAlignment="Center" Grid.Row="7" Margin="0,6,0,0" FontSize="12" Foreground="#52657A">Üres mező: automatikus kiosztás.</TextBlock>
                     
-                    <Button VerticalAlignment="Bottom" Grid.Row="8" Height="36" Background="#DDEBFA" Content="REGISZTRAL"></Button>
+                    <Button x:Name="btnRegisztral" VerticalAlignment="Bottom" Grid.Row="8" Height="36" Background="#DDEBFA" Content="REGISZTRÁL" Click="Regisztral_Click"></Button>
 
                 </Grid>
             
@@ -147,20 +149,22 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel>
-                        <TextBlock FontSize="20" FontWeight="Bold" Text="Regisztralt versenyzok"></TextBlock>
-                        <TextBlock Text="Rajtszam | Nev | Versenyszam | Nem | Kor | O | VB | EB"></TextBlock>
+                        <TextBlock FontSize="20" FontWeight="Bold" Text="Regisztrált versenyzők"></TextBlock>
+                        <TextBlock Margin="0,6,0,0" Foreground="#52657A" Text="Rajtszám | Név | Versenyszám | Nem | Kor | O | VB | EB"></TextBlock>
 
                     </StackPanel>
 
-                    <Border Grid.Row="1"
-                        Margin="6"
-                        BorderBrush="#D4DDE7">
-                        <ListBox>
+                    <ListBox x:Name="lstVersenyzok"
+                             Grid.Row="1"
+                             Margin="0,12,0,12"
+                             Padding="6"
+                             BorderBrush="#D4DDE7"
+                             ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto">
 
-                        </ListBox>
-                    </Border>
+                    </ListBox>
 
-                    <TextBlock Grid.Row="2" Text="O = olimpiai, VB = vilagbajnoki, EB = europa-bajnoki csucs"></TextBlock>
+                    <TextBlock Grid.Row="2" FontSize="12" Foreground="#52657A" Text="O = olimpiai, VB = világbajnoki, EB = Európa-bajnoki csúcs"></TextBlock>
 
                 </Grid>
             
@@ -177,22 +181,16 @@
 
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"></ColumnDefinition>
-                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock VerticalAlignment="Center" Text="Regisztral Versenyzok Szama: 0"></TextBlock>
+                    <TextBlock x:Name="txtLetszam" VerticalAlignment="Center" Text="Regisztrált versenyzők: 0"></TextBlock>
 
-                    <Grid Grid.Column="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-
-                        <Button Width="210" Height="32" Margin="0,0,8,0" Content="FAJLBA MENTES" Grid.Column="0"></Button>
-                        <Button Width="210" Height="32" Margin="8,0,0,0" Content="FAJBOL BETOLTES" Grid.Column="1"></Button>
-
-                    </Grid>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <Button x:Name="btnMentes" Width="210" Height="32" Margin="0,0,16,0" Content="FÁJLBA MENTÉS" Click="Mentes_Click"></Button>
+                        <Button x:Name="btnBetoltes" Width="210" Height="32" Content="FÁJLBÓL BETÖLTÉS" Click="Betoltes_Click"></Button>
+                    </StackPanel>
                 </Grid>
             
                 
@@ -200,9 +198,6 @@
         </Border>
         
         
-
-
-
         </Grid>
     </Border>
 </Window>
