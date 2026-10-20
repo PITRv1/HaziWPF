@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DogaTest"
         mc:Ignorable="d"
-        Title="Atlétikai verseny - Rajtszámok" Height="820" Width="1240"
+        Title="Atlétikai verseny - Rajtszámok" Height="820" Width="1440"
         Background="#F3F6FA"
         FontFamily="Segoe UI"
         FontSize="14"
@@ -108,9 +108,9 @@
 
                     <StackPanel Grid.Row="5" Margin="0,10,0,0">
                         <TextBlock FontWeight="Bold" FontSize="16">Korábbi eredmények</TextBlock>
-                        <CheckBox x:Name="chkOlimpiai" Margin="0,6,0,0">Olimpiai csúcs</CheckBox>
-                        <CheckBox x:Name="chkVB" Margin="0,6,0,0">Világbajnoki csúcs</CheckBox>
-                        <CheckBox x:Name="chkEB" Margin="0,6,0,0">Európa-bajnoki csúcs</CheckBox>
+                        <CheckBox x:Name="chkOlimpiai" Margin="0,6,0,0">Olimpiai csúcs (OR)</CheckBox>
+                        <CheckBox x:Name="chkVB" Margin="0,6,0,0">Világcsúcs (VR)</CheckBox>
+                        <CheckBox x:Name="chkEB" Margin="0,6,0,0">Európa-csúcs (ER)</CheckBox>
                     </StackPanel>
 
                     <Grid Grid.Row="6" Height="32" Margin="0,10,0,0">
@@ -150,21 +150,66 @@
 
                     <StackPanel>
                         <TextBlock FontSize="20" FontWeight="Bold" Text="Regisztrált versenyzők"></TextBlock>
-                        <TextBlock Margin="0,6,0,0" Foreground="#52657A" Text="Rajtszám | Név | Versenyszám | Nem | Kor | O | VB | EB"></TextBlock>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                            <TextBlock Text="Eredményszűrő:" VerticalAlignment="Center" Margin="0,0,12,0"></TextBlock>
+                            <ComboBox x:Name="cmbRekordSzuro" Width="340" Height="32" IsEditable="False" SelectedIndex="0" VerticalContentAlignment="Center">
+                                <ComboBoxItem>Összes</ComboBoxItem>
+                                <ComboBoxItem>OR - olimpiai csúcs</ComboBoxItem>
+                                <ComboBoxItem>VR - világcsúcs</ComboBoxItem>
+                                <ComboBoxItem>ER - Európa-csúcs</ComboBoxItem>
+                            </ComboBox>
+                        </StackPanel>
 
                     </StackPanel>
 
-                    <ListBox x:Name="lstVersenyzok"
-                             Grid.Row="1"
-                             Margin="0,12,0,12"
-                             Padding="6"
-                             BorderBrush="#D4DDE7"
-                             ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                             ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <DataGrid x:Name="dgVersenyzok"
+                              Grid.Row="1"
+                              Margin="0,12,0,12"
+                              ItemsSource="{Binding Versenyzok, Mode=OneWay}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              CanUserReorderColumns="False"
+                              HeadersVisibility="Column"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              RowHeight="32"
+                              ColumnHeaderHeight="38"
+                              GridLinesVisibility="Horizontal"
+                              HorizontalGridLinesBrush="#E3E9F0"
+                              AlternatingRowBackground="#F4F7FB"
+                              Background="White"
+                              BorderBrush="#D4DDE7">
 
-                    </ListBox>
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="Background" Value="#19324D" />
+                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="Padding" Value="8,4" />
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
 
-                    <TextBlock Grid.Row="2" FontSize="12" Foreground="#52657A" Text="O = olimpiai, VB = világbajnoki, EB = Európa-bajnoki csúcs"></TextBlock>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Rajtszám" Width="88" Binding="{Binding Rajtszam, Mode=OneWay}" />
+                            <DataGridTextColumn Header="Név" Width="*" Binding="{Binding Nev, Mode=OneWay}" />
+                            <DataGridTextColumn Header="Versenyszám" Width="160" Binding="{Binding Versenyszam, Mode=OneWay}" />
+                            <DataGridTextColumn Header="Nem" Width="70" Binding="{Binding Nem, Mode=OneWay}" />
+                            <DataGridTextColumn Header="Életkor" Width="80" Binding="{Binding Eletkor, Mode=OneWay}" />
+                            <DataGridCheckBoxColumn Header="OR" Width="80" Binding="{Binding OR, Mode=OneWay}" />
+                            <DataGridCheckBoxColumn Header="VR" Width="80" Binding="{Binding VR, Mode=OneWay}" />
+                            <DataGridCheckBoxColumn Header="ER" Width="80" Binding="{Binding ER, Mode=OneWay}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <TextBlock FontSize="12" Foreground="#52657A" Margin="0,0,24,0" Text="OR = olimpiai csúcs"></TextBlock>
+                        <TextBlock FontSize="12" Foreground="#52657A" Margin="0,0,24,0" Text="VR = világcsúcs"></TextBlock>
+                        <TextBlock FontSize="12" Foreground="#52657A" Text="ER = Európa-csúcs"></TextBlock>
+                    </StackPanel>
 
                 </Grid>
             
@@ -185,7 +230,7 @@
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock x:Name="txtLetszam" VerticalAlignment="Center" Text="Regisztrált versenyzők: 0"></TextBlock>
+                    <TextBlock x:Name="txtLetszam" VerticalAlignment="Center" Text="Látható: 0 / Összesen: 0"></TextBlock>
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
                         <Button x:Name="btnMentes" Width="210" Height="32" Margin="0,0,16,0" Content="FÁJLBA MENTÉS" Click="Mentes_Click"></Button>

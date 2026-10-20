@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -19,11 +20,15 @@ namespace DogaTest
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string Fejlec = "Rajtszam;Nev;Versenyszam;Nem;Eletkor;OlimpiaiCsucs;VBCsucs;EBCsucs";
+        private const string Fejlec = "Rajtszam;Nev;Versenyszam;Nem;Eletkor;OR;VR;ER";
+
+        public ObservableCollection<Versenyzo> Versenyzok { get; } = new();
 
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this;
+            FrissitLetszam();
         }
 
         private void Eletkor_Valtozott(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -36,26 +41,22 @@ namespace DogaTest
 
         private bool Foglalt(int rajtszam)
         {
-            foreach (object elem in lstVersenyzok.Items)
+            foreach (Versenyzo v in Versenyzok)
             {
-                string[] mezok = ((string)elem).Split('|');
-                if (int.Parse(mezok[0].Trim()) == rajtszam)
+                if (v.Rajtszam == rajtszam)
                 {
                     return true;
                 }
-
             }
             return false;
         }
 
         private int ElsoSzabad()
         {
-
             bool[] foglaltak = new bool[10000];
-            foreach (object elem in lstVersenyzok.Items)
+            foreach (Versenyzo v in Versenyzok)
             {
-                string[] mezok = ((string)elem).Split('|');
-                foglaltak[int.Parse(mezok[0].Trim())] = true;
+                foglaltak[v.Rajtszam] = true;
             }
 
             for (int i = 1; i <= 9999; i++)
@@ -65,17 +66,13 @@ namespace DogaTest
                     return i;
                 }
             }
-            
             return 0;
         }
 
         private void FrissitLetszam()
         {
-        
-            txtLetszam.Text = "Regisztrált versenyzők: " + lstVersenyzok.Items.Count;
+            txtLetszam.Text = "Látható: " + Versenyzok.Count + " / Összesen: " + Versenyzok.Count;
         }
-
-
 
         private void Regisztral_Click(object sender, RoutedEventArgs e)
         {
@@ -133,14 +130,18 @@ namespace DogaTest
 
             ComboBoxItem kijelolt = (ComboBoxItem)cmbVersenyszam.SelectedItem;
             string versenyszam = (string)kijelolt.Content;
-            string nem = rbFerfi.IsChecked == true ? "F" : "N";
-            int eletkor = (int)sldEletkor.Value;
-            int olimpiai = chkOlimpiai.IsChecked == true ? 1 : 0;
-            int vb = chkVB.IsChecked == true ? 1 : 0;
-            int eb = chkEB.IsChecked == true ? 1 : 0;
 
-            string sor = rajtszam + " | " + nev + " | " + versenyszam + " | " + nem + " | " + eletkor + " | " + olimpiai + " | " + vb + " | " + eb;
-            lstVersenyzok.Items.Add(sor);
+            Versenyzo uj = new Versenyzo();
+            uj.Rajtszam = rajtszam;
+            uj.Nev = nev;
+            uj.Versenyszam = versenyszam;
+            uj.Nem = rbFerfi.IsChecked == true ? "F" : "N";
+            uj.Eletkor = (int)sldEletkor.Value;
+            uj.OR = chkOlimpiai.IsChecked == true;
+            uj.VR = chkVB.IsChecked == true;
+            uj.ER = chkEB.IsChecked == true;
+
+            Versenyzok.Add(uj);
             FrissitLetszam();
 
             MessageBox.Show("A regisztráció sikeres. Kiosztott rajtszám: " + rajtszam, "Információ", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -165,14 +166,11 @@ namespace DogaTest
                 List<string> sorok = new List<string>();
                 sorok.Add(Fejlec);
 
-                foreach (object elem in lstVersenyzok.Items)
+                foreach (Versenyzo v in Versenyzok)
                 {
-                    string[] mezok = ((string)elem).Split('|');
-                    for (int i = 0; i < mezok.Length; i++)
-                    {
-                        mezok[i] = mezok[i].Trim();
-                    }
-                    sorok.Add(string.Join(";", mezok));
+                    string sor = v.Rajtszam + ";" + v.Nev + ";" + v.Versenyszam + ";" + v.Nem + ";" + v.Eletkor + ";" +
+                                 (v.OR ? "1" : "0") + ";" + (v.VR ? "1" : "0") + ";" + (v.ER ? "1" : "0");
+                    sorok.Add(sor);
                 }
 
                 File.WriteAllLines(dialog.FileName, sorok, new UTF8Encoding(false));
@@ -196,7 +194,7 @@ namespace DogaTest
             try
             {
                 string[] sorok = File.ReadAllLines(dialog.FileName, Encoding.UTF8);
-                List<string> ujLista = new List<string>();
+                List<Versenyzo> ujLista = new List<Versenyzo>();
                 HashSet<int> rajtszamok = new HashSet<int>();
 
                 for (int i = 1; i < sorok.Length; i++)
@@ -212,20 +210,29 @@ namespace DogaTest
                         mezok[j] = mezok[j].Trim();
                     }
 
-                    int rajtszam = int.Parse(mezok[0]);
-                    if (!rajtszamok.Add(rajtszam))
+                    Versenyzo v = new Versenyzo();
+                    v.Rajtszam = int.Parse(mezok[0]);
+                    v.Nev = mezok[1];
+                    v.Versenyszam = mezok[2];
+                    v.Nem = mezok[3];
+                    v.Eletkor = int.Parse(mezok[4]);
+                    v.OR = mezok[5] == "1";
+                    v.VR = mezok[6] == "1";
+                    v.ER = mezok[7] == "1";
+
+                    if (!rajtszamok.Add(v.Rajtszam))
                     {
-                        MessageBox.Show("A fájlban ismétlődő rajtszám található: " + rajtszam, "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("A fájlban ismétlődő rajtszám található: " + v.Rajtszam, "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
 
-                    ujLista.Add(string.Join(" | ", mezok));
+                    ujLista.Add(v);
                 }
 
-                lstVersenyzok.Items.Clear();
-                foreach (string sor in ujLista)
+                Versenyzok.Clear();
+                foreach (Versenyzo uj in ujLista)
                 {
-                    lstVersenyzok.Items.Add(sor);
+                    Versenyzok.Add(uj);
                 }
                 FrissitLetszam();
             }
